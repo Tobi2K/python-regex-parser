@@ -14,8 +14,14 @@ With this code you can convert regular expression given in the Python format to 
 
 For a quick guide on Python regex, see the [official documentation](https://docs.python.org/3/howto/regex.html).
 
-### TODO
-- [ ] Add formal definition
+## Formal Definition
+This is the formal definition we convert Python regex to:
+- `a, b, c, ...`: members of the alphabet used in the expression
+- `ab` or `a&b`: the concatenation of `a` and `b` (i.e., `a` must be directly followed by `b`)
+- `a|b`: the choice of `a` or `b` (i.e., either `a` or `b` is accepted); other literature also uses `+`
+- `a*`: the Kleene Star operator (i.e., `a` can be repeated 0 or more times)
+
+> Furthermore, use `\e` for an empty string in inputs.
 
 
 ## Usage
