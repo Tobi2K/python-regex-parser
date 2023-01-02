@@ -15,17 +15,28 @@ With this code you can convert regular expression given in the Python format to 
 For a quick guide on Python regex, see the [official documentation](https://docs.python.org/3/howto/regex.html).
 
 ### TODO
-- [ ] Add optional strict mode
-- [ ] 
-- [ ]
+- [ ] Add formal definition
 
 
 ## Usage
 
-Run the script
+Run the script with
 
 ```bash
-python main.py <expression>
+python main.py <destination> -e <expression> 
+```
+where `destination` should be one of `REGEX`, `SYA`, `NFA` or `DFA`.
+
+Other optional arguments include `-s` for strict mode. Here, an error is thrown instead of making any assumptions when converting an expression.
+Also, `-d` enables debug mode, which prints conversion steps.
+
+
+
+
+
+For a complete explanation of command-line arguments see
+```bash
+python main.py -h
 ```
 
 ## License

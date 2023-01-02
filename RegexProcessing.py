@@ -1,4 +1,6 @@
 """ Static Class to clean and standardize regular expressions """
+from DFA import DFA
+from NFA import NFA
 
 
 class Regexer:
@@ -277,7 +279,7 @@ class Regexer:
             return tmp_string
 
     @staticmethod
-    def escape(inp: str):
+    def escape(inp: str, strict=False):
         """Escapes all Python specific regex attributes.
 
         Converts character classes (e.g. [a-z]), commands (e.g. \\\\d), etc.
@@ -286,6 +288,8 @@ class Regexer:
         ----------
         inp : str
             Unescaped regular expression, which will be escaped for further preprocessing
+        strict: bool
+            Whether to throw an error on an potential incorrectly transformed regex
 
         Returns
         -------
@@ -438,6 +442,8 @@ class Regexer:
                             next(it)
                             if not char_array[i + 1] == ':':
                                 no_guarantee = True
+                                if strict:
+                                    raise Exception("Can't convert lookahead assertion with the formal defintion.")
                             continue
                 # check if last char was a singular closing bracket
                 if last_chars[-1] == ')' and len(last_chars) == 1:
@@ -458,10 +464,14 @@ class Regexer:
             # if ^ or $ exists, no guarantee can be given and use may be illegal
             elif char == '^':
                 no_guarantee = True
+                if strict:
+                    raise Exception("Can't convert beginning of line match (^).")
                 if not i == 0:
                     raise Exception("Illegal use of ^! Not at the beginning of the line.")
             elif char == '$':
                 no_guarantee = True
+                if strict:
+                    raise Exception("Can't convert end of line match ($).")
                 if not i == (len(char_array) - 1):
                     raise Exception("Illegal use of $! Not at the end of the line.")
             # update bracket_tracker, if a bracket is open
@@ -578,8 +588,8 @@ class Regexer:
         return ''.join(output)
 
     @staticmethod
-    def preprocess(regex, steps=False):
-        """Converts a given Python-style regex string into a formal-esque regular expression defintion.
+    def regex(regex, steps=False, strict=False):
+        """Converts a given Python-style regex string into a formal-esque regular expression definition.
 
         Parameters
         ----------
@@ -591,10 +601,39 @@ class Regexer:
         Returns
         -------
         [str, bool]
+            [filled, no_guarantee] where 'filled' is the converted regular expression
+            and 'no_guarantee' indicates whether some assumptions had to be made
+        """
+        [escaped, no_guarantee] = Regexer.escape(regex, strict)
+        filled = Regexer.fill_operators(escaped)
+
+        if steps:
+            print("Escaped string: ", escaped)
+            print("Operator-filled string: ", filled)
+
+        return filled, no_guarantee
+
+    @staticmethod
+    def full_shunting_yard(regex, steps=False, strict=False):
+        """Converts a given Python-style regex string into a formal-esque regular expression definition in
+        Shunting-Yard form.
+
+        Parameters
+        ----------
+        regex : str
+            The regular expression string to be processed.
+        steps: bool
+            Whether to print sub-step results
+        strict: bool
+            Whether to throw an error on an potential incorrectly transformed regex
+
+        Returns
+        -------
+        [str, bool]
             [normalized, no_guarantee] where 'normalized' is the converted regular expression
             and 'no_guarantee' indicates whether some assumptions had to be made
         """
-        [escaped, no_guarantee] = Regexer.escape(regex)
+        [escaped, no_guarantee] = Regexer.escape(regex, strict)
         filled = Regexer.fill_operators(escaped)
         normalized = Regexer.shunting_yard(filled)
 
@@ -604,3 +643,69 @@ class Regexer:
             print("Shunting-yard string: ", normalized)
 
         return normalized, no_guarantee
+
+    @staticmethod
+    def create_nfa(regex, steps=False, strict=False):
+        """Converts a given Python-style regex string into a formal-esque regular expression definition.
+        The converted expression is then converted to an NFA.
+
+        Parameters
+        ----------
+        regex : str
+            The regular expression string to be processed.
+        steps: bool
+            Whether to print sub-step results
+        strict: bool
+            Whether to throw an error on an potential incorrectly transformed regex
+
+        Returns
+        -------
+        [Automaton, bool]
+            [nfa, no_guarantee] where 'nfa' is the created NFA
+            and 'no_guarantee' indicates whether some assumptions had to be made
+        """
+        [escaped, no_guarantee] = Regexer.escape(regex, strict)
+        filled = Regexer.fill_operators(escaped)
+        normalized = Regexer.shunting_yard(filled)
+        nfa = NFA(normalized)
+
+        if steps:
+            print("Escaped string: ", escaped)
+            print("Operator-filled string: ", filled)
+            print("Shunting-yard string: ", normalized)
+
+        return nfa, no_guarantee
+
+    @staticmethod
+    def create_dfa(regex, steps=False, strict=False):
+        """Converts a given Python-style regex string into a formal-esque regular expression definition.
+        The converted expression is then converted to an DFA.
+
+        Parameters
+        ----------
+        regex : str
+            The regular expression string to be processed.
+        steps: bool
+            Whether to print sub-step results
+        strict: bool
+            Whether to throw an error on an potential incorrectly transformed regex
+
+        Returns
+        -------
+        [Automaton, bool]
+            [dfa, no_guarantee] where 'dfa' is the created DFA
+            and 'no_guarantee' indicates whether some assumptions had to be made
+        """
+        [escaped, no_guarantee] = Regexer.escape(regex, strict)
+        filled = Regexer.fill_operators(escaped)
+        normalized = Regexer.shunting_yard(filled)
+        nfa = NFA(normalized)
+        dfa = DFA(nfa.get_nfa())
+
+        if steps:
+            print("Escaped string: ", escaped)
+            print("Operator-filled string: ", filled)
+            print("Shunting-yard string: ", normalized)
+            nfa.print_nfa()
+
+        return dfa, no_guarantee
