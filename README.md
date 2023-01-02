@@ -31,7 +31,7 @@ Run the script with
 ```bash
 python main.py <destination> -e <expression> 
 ```
-where `destination` should be one of `REGEX`, `SYA`, `NFA` or `DFA`.
+where `destination` must be one of `REGEX`, `SYA`, `NFA` or `DFA`.
 
 Other optional arguments include `-s` for strict mode. Here, an error is thrown instead of making any assumptions when converting an expression.
 Also, `-d` enables debug mode, which prints conversion steps.
