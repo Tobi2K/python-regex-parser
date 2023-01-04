@@ -609,7 +609,7 @@ class Regexer:
 
         if steps:
             print("Escaped string: ", escaped)
-            print("Operator-filled string: ", filled)
+            print("Operator-filled string: ", filled, "\n")
 
         return filled, no_guarantee
 
@@ -640,7 +640,7 @@ class Regexer:
         if steps:
             print("Escaped string: ", escaped)
             print("Operator-filled string: ", filled)
-            print("Shunting-yard string: ", normalized)
+            print("Shunting-yard string: ", normalized, "\n")
 
         return normalized, no_guarantee
 
@@ -672,7 +672,7 @@ class Regexer:
         if steps:
             print("Escaped string: ", escaped)
             print("Operator-filled string: ", filled)
-            print("Shunting-yard string: ", normalized)
+            print("Shunting-yard string: ", normalized, "\n")
 
         return nfa, no_guarantee
 
@@ -706,6 +706,8 @@ class Regexer:
             print("Escaped string: ", escaped)
             print("Operator-filled string: ", filled)
             print("Shunting-yard string: ", normalized)
+            print("NFA:")
             nfa.print_nfa()
+            print("\n------------------\n")
 
         return dfa, no_guarantee

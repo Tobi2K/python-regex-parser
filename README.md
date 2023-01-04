@@ -37,7 +37,7 @@ where `destination` must be one of `REGEX`, `SYA`, `NFA` or `DFA`.
 * `NFA` creates a [nondeterministic finite automaton](https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton)
 * `DFA` creates a [deterministic finite automaton](https://en.wikipedia.org/wiki/Deterministic_finite_automaton)
 
-Other optional arguments include `-s` for strict mode. Here, an error is thrown instead of making any assumptions when converting an expression.
+Other optional arguments include `-s` for strict mode. Here, an error is thrown instead of making any assumptions when converting an expression (e.g., for [lookahead assertion](https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups)).
 Also, `-d` enables debug mode, which prints conversion steps (i.e., all previous steps in the list above).
 
 
@@ -119,6 +119,19 @@ Transition Function
                  4 -> 5 with 'a'
                  5 -> 5 with 'a'
                  2 -> 5 with 'a'
+```
+---
+### SYA - DEBUG
+```bash
+python main.py SYA -e '(ab|c)a*' -d
+```
+#### Output: 
+``` 
+Escaped string:  (ab|c)a*
+Operator-filled string:  (a&b|c)&a*
+Shunting-yard string:  ab&c|a*& 
+
+ab&c|a*&
 ```
 
 <hr style="border:2px solid gray">
