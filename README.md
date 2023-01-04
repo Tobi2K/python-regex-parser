@@ -21,7 +21,7 @@ This is the formal definition we convert Python regex to:
 - `a|b`: the choice of `a` or `b` (i.e., either `a` or `b` is accepted); other literature also uses `+`
 - `a*`: the Kleene Star operator (i.e., `a` can be repeated 0 or more times)
 
-> Furthermore, use `\e` for an empty string in inputs.
+> Hint: use `\e` for an empty string in inputs.
 
 
 ## Usage
