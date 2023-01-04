@@ -32,18 +32,96 @@ Run the script with
 python main.py <destination> -e <expression> 
 ```
 where `destination` must be one of `REGEX`, `SYA`, `NFA` or `DFA`.
+* `REGEX` simply converts the given expression into a formal defintion regular expression
+* `SYA` converts the given expression into a post-fix notation using the [shunting-yard algorithm](https://en.wikipedia.org/wiki/Shunting_yard_algorithm)
+* `NFA` creates a [nondeterministic finite automaton](https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton)
+* `DFA` creates a [deterministic finite automaton](https://en.wikipedia.org/wiki/Deterministic_finite_automaton)
 
 Other optional arguments include `-s` for strict mode. Here, an error is thrown instead of making any assumptions when converting an expression.
-Also, `-d` enables debug mode, which prints conversion steps.
-
-
-
+Also, `-d` enables debug mode, which prints conversion steps (i.e., all previous steps in the list above).
 
 
 For a complete explanation of command-line arguments see
 ```bash
 python main.py -h
 ```
+
+## Examples
+### REGEX
+```bash
+python main.py REGEX -e '(ab|c)a*'
+```
+#### Output: 
+``` 
+(a&b|c)&a*
+```
+---
+### SYA
+```bash
+python main.py SYA -e '(ab|c)a*'
+```
+#### Output: 
+``` 
+ab&c|a*&
+```
+---
+### NFA
+```bash
+python main.py NFA -e '(ab|c)a*'
+```
+#### Output: 
+```
+States
+        Q: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
+Initial State(s)
+        q0:  1
+
+Final State(s)
+        F: [10]
+
+Transition Function
+        δ:
+                 1 -> 2 with '##e##'
+                 1 -> 5 with '##e##'
+                 4 -> 7 with '##e##'
+                 6 -> 7 with '##e##'
+                 2 -> 3 with 'a'
+                 3 -> 4 with 'b'
+                 5 -> 6 with 'c'
+                 7 -> 8 with '##e##'
+                 7 -> 10 with '##e##'
+                 9 -> 10 with '##e##'
+                 9 -> 8 with '##e##'
+                 8 -> 9 with 'a'
+```
+---
+### DFA
+```bash
+python main.py DFA -e '(ab|c)a*'
+```
+#### Output: 
+```
+States
+        Q: {1, 2, 3, 4, 5}
+
+Initial State(s)
+        q0:  1
+
+Final State(s)
+        F: [2, 4, 5]
+
+Transition Function
+        δ:
+                 1 -> 2 with 'c'
+                 1 -> 3 with 'a'
+                 3 -> 4 with 'b'
+                 4 -> 5 with 'a'
+                 5 -> 5 with 'a'
+                 2 -> 5 with 'a'
+```
+
+<hr style="border:2px solid gray">
 
 ## License
 
