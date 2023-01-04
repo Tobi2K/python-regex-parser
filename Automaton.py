@@ -216,9 +216,13 @@ class Automaton:
         -------
         None
         """
+        print("States")
         print("\tQ:", self.STATES)
+        print("\nInitial State(s)")
         print("\tq0: ", self.INIT_STATE)
+        print("\nFinal State(s)")
         print("\tF:", self.FINAL_STATES)
+        print("\nTransition Function")
         print("\tδ:")
         for origin, goal in self.DELTA.items():
             for state in goal:
