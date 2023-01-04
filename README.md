@@ -4,7 +4,7 @@
   <br>
 </h1>
 
-<h4 align="center">Utility to convert Python Regular Expression to formal definition</h4>
+<h4 align="center">Utility to convert Python Regular Expression to formal definition and finite automata</h4>
 
 ---
 
